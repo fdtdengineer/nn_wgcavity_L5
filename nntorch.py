@@ -141,7 +141,7 @@ if __name__ == "__main__":
     num_params = 14
     num_dims = 2
     num_samples = 10000
-    EPOCH = 500
+    EPOCH = 80
     num_batch = 100
     num_test = 100
     seed = 12345678
@@ -157,10 +157,9 @@ if __name__ == "__main__":
     x = torch.tensor(x, dtype=torch.float32)
     t = torch.tensor(npr_q_fem, dtype=torch.float32)
     dataset = torch.utils.data.TensorDataset(x, t)
-    #train_dataset, test_dataset = torch.utils.data.random_split(dataset, [num_samples-num_test, num_test], generator=torch.Generator().manual_seed(seed))
-    #train_dataset, test_dataset = torch.utils.data.random_split(dataset, [num_samples-num_test, num_test], generator=torch.Generator().manual_seed(seed))
-    train_dataset = torch.utils.data.Subset(dataset, range(num_samples-num_test))
-    test_dataset = torch.utils.data.Subset(dataset, range(num_samples-num_test, num_samples))
+    train_dataset, test_dataset = torch.utils.data.random_split(dataset, [num_samples-num_test, num_test], generator=torch.Generator().manual_seed(seed))
+    #train_dataset = torch.utils.data.Subset(dataset, range(num_samples-num_test))
+    #test_dataset = torch.utils.data.Subset(dataset, range(num_samples-num_test, num_samples))
 
     # save test dataset
     np.save(filepath_npy+'test_data.npy', test_dataset[:][0])

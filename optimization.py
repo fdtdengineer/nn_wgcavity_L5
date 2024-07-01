@@ -30,7 +30,7 @@ if __name__ == "__main__":
     model = nntorch.CNN()
     model.load_state_dict(torch.load(filepath_output + "cnn.pkl"))
 
-    t_target = 9 # target: Q=1e9 
+    t_target = 5 # target: Q=1e5
 
     # Load test data
     test_data = np.load(filepath_npy + "test_data.npy")
@@ -38,14 +38,14 @@ if __name__ == "__main__":
     x0 = np.zeros(test_data[0].shape)
     x0 = x0.reshape(-1)
     x = torch.from_numpy(x0).float()
-    x = x.view(-1, 1, 13, 2)
+    x = x.view(-1, 1, 14, 2)
     x.requires_grad = True
     t = torch.from_numpy(np.array(t_target)).float()
     t = t.view(1, 1)  
 
     optimizer = torch.optim.SGD([x], lr=0.01)
     #criterion = torch.nn.MSELoss()
-    criterion = nntorch.MSEwithL2(model, lambda_reg=2)
+    criterion = nntorch.MSEwithL2(model, lambda_reg=1)
     # Optimization
     num_iter = 1000
     loss_history = np.zeros(num_iter)
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     plt.show()
 
     # Prediction
-    x = x.reshape(-1, 1, 13, 2)
+    x = x.reshape(-1, 1, 14, 2)
     prediction = model(x)
     prediction = prediction.detach().numpy()
     prediction = prediction.reshape(1, 1)
@@ -81,7 +81,7 @@ if __name__ == "__main__":
     print("prediction = ", prediction)
 
     # to_save_x
-    x_out = x_out.reshape(13,2)
+    x_out = x_out.reshape(14,2)
 
     df_x_out = pd.DataFrame(x_out)
     df_x_out.to_csv(filepath_npy + "x_out1.csv", index=False, header=False)
