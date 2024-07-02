@@ -13,16 +13,22 @@ if True:
 
 # To represent the symmetry about x- and y-axes
 class SymX(nn.Module):
-    def __init__(self, list_idxzero=6):
+    def __init__(self, list_idxzero_x=[8], list_idxzero_y=[0,1,2], xabsmax=30):
         super(SymX, self).__init__()
-        self.list_idxzero = list_idxzero
+        self.list_idxzero_x = list_idxzero_x
+        self.list_idxzero_y = list_idxzero_y
+        self.xabsmax = xabsmax
 
     def forward(self, x):
         num_data = x.size(0)
 
         # should be zero according to the symmetry
         x = x.clone()
-        #x[:, 0, self.list_idxzero, 0] = 0
+        x[:, 0, self.list_idxzero_x, 0] = 0
+        x[:, 0, self.list_idxzero_y, 1] = 0
+        #xabsmax
+        x[x > self.xabsmax] = self.xabsmax
+        x[x < -self.xabsmax] = -self.xabsmax
 
         xq = torch.cat([torch.zeros(num_data, 1, 3, 2), x], dim=2)
         # dim=2 の10行目と11行目の間に0を挿入（2列目調節用）
@@ -61,9 +67,9 @@ class CNN(nn.Module):
         super(CNN, self).__init__()
         padding=0
         self.symx = SymX()
-        self.conv1 = nn.Conv2d(2, 50, kernel_size=(3,5), padding=padding)
+        self.conv1 = nn.Conv2d(2, 50, kernel_size=(3,3), padding=padding)
         self.relu1 = nn.ReLU()
-        self.fc1 = nn.Linear(50*3*7, 200) ## (5-4)*(13-4)
+        self.fc1 = nn.Linear(50*3*9, 200) ## (5-4)*(13-4)
         self.relu2 = nn.ReLU()
         self.dropout1 = nn.Dropout(0.2)
         self.fc2 = nn.Linear(200, 50)
@@ -141,7 +147,7 @@ if __name__ == "__main__":
     num_params = 14
     num_dims = 2
     num_samples = 10000
-    EPOCH = 80
+    EPOCH = 500
     num_batch = 100
     num_test = 100
     seed = 12345678

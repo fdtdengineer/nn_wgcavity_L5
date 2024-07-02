@@ -43,11 +43,11 @@ if __name__ == "__main__":
     t = torch.from_numpy(np.array(t_target)).float()
     t = t.view(1, 1)  
 
-    optimizer = torch.optim.SGD([x], lr=0.01)
+    optimizer = torch.optim.SGD([x], lr=2)
     #criterion = torch.nn.MSELoss()
     criterion = nntorch.MSEwithL2(model, lambda_reg=1)
     # Optimization
-    num_iter = 1000
+    num_iter = int(5e3)
     loss_history = np.zeros(num_iter)
 
     for i in range(num_iter):
