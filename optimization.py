@@ -24,11 +24,12 @@ if True:
     filepath_output = "output\\"
     filepath_figure = "figure\\"
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 if __name__ == "__main__":
     # Load trained model "cnn.pkl"
-    model = nntorch.CNN()
-    model.load_state_dict(torch.load(filepath_output + "cnn.pkl"))
+    model = nntorch.CNN().to(device)
+    model.load_state_dict(torch.load(filepath_output + "cnn.pkl", map_location=device))
 
     t_target = 5 # target: Q=1e5
 
@@ -37,10 +38,10 @@ if __name__ == "__main__":
     test_label = np.load(filepath_npy + "test_label.npy")
     x0 = np.zeros(test_data[0].shape)
     x0 = x0.reshape(-1)
-    x = torch.from_numpy(x0).float()
+    x = torch.tensor(x0, device=device, dtype=torch.float32)
     x = x.view(-1, 1, 14, 2)
     x.requires_grad = True
-    t = torch.from_numpy(np.array(t_target)).float()
+    t = torch.tensor([t_target], device=device, dtype=torch.float32)
     t = t.view(1, 1)  
 
     optimizer = torch.optim.SGD([x], lr=2)
@@ -59,9 +60,10 @@ if __name__ == "__main__":
         loss_history[i] = loss.item()
 
     np.save(filepath_npy + "loss_history.npy", loss_history)
-    x_out = x.detach().numpy()
+    x_out = x.detach().cpu().numpy()
     print(x_out.flatten())
     # Plot loss history
+    """
     plt.figure(figsize=(5,4))
     plt.plot(loss_history)
     plt.xlabel("iteration")
@@ -70,11 +72,12 @@ if __name__ == "__main__":
     plt.tight_layout()
     plt.savefig(filepath_figure + "loss_history_opt.svg", transparent=True)
     plt.show()
-
+    """
+    
     # Prediction
     x = x.reshape(-1, 1, 14, 2)
     prediction = model(x)
-    prediction = prediction.detach().numpy()
+    prediction = prediction.detach().cpu().numpy()
     prediction = prediction.reshape(1, 1)
 
     print("x = ", x)

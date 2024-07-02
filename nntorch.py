@@ -11,6 +11,8 @@ if True:
     filepath_output = "output\\"
     filepath_figure = "figure\\"
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 # To represent the symmetry about x- and y-axes
 class SymX(nn.Module):
     def __init__(self, list_idxzero_x=[8], list_idxzero_y=[0,1,2], xabsmax=30):
@@ -30,11 +32,11 @@ class SymX(nn.Module):
         x[x > self.xabsmax] = self.xabsmax
         x[x < -self.xabsmax] = -self.xabsmax
 
-        xq = torch.cat([torch.zeros(num_data, 1, 3, 2), x], dim=2)
+        xq = torch.cat([torch.zeros(num_data, 1, 3, 2, device=device), x], dim=2)
         # dim=2 の10行目と11行目の間に0を挿入（2列目調節用）
         xql = xq[:, :, :6, :]
         xqr = xq[:, :, 6:, :]
-        xq = torch.cat([xql, torch.zeros(num_data, 1, 1, 2), xqr], dim=2)
+        xq = torch.cat([xql, torch.zeros(num_data, 1, 1, 2, device=device), xqr], dim=2)
 
         xq2 = xq.view(num_data, 3, -1, 2).permute(0, 3, 1, 2)
         x_half = torch.cat([xq2.flip(dims=[3])[:,:,:,:-1], xq2], dim=3)
@@ -51,8 +53,8 @@ class MSEwithL2(nn.Module):
     def forward(self, outputs, target):
         mse_loss = nn.MSELoss()(outputs, target)
 
-        regularization = torch.tensor(0.0)
-        num_params = torch.tensor(0)
+        regularization = torch.tensor(0.0, device=device)
+        num_params = torch.tensor(0.0, device=device)
         for param in self.model.parameters():
             regularization += torch.sum(param**2)
             num_params += param.numel()
@@ -147,12 +149,12 @@ if __name__ == "__main__":
     num_params = 14
     num_dims = 2
     num_samples = 10000
-    EPOCH = 500
+    EPOCH = 100
     num_batch = 100
-    num_test = 100
+    num_test = 1000
     seed = 12345678
     lr=0.01
-    lambda_reg=2
+    lambda_reg=1
     # Data Loadings
     df_q_fem = pd.read_csv(filepath_q_fem + filename_q_fem)#[0:num_samples]
     npr_q_fem = df_q_fem.to_numpy()
@@ -175,7 +177,6 @@ if __name__ == "__main__":
     train_loader = DataLoader(dataset=train_dataset, batch_size=num_batch, shuffle=False)
     test_loader  = DataLoader(dataset=test_dataset,  batch_size=num_batch, shuffle=False)
 
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = CNN().to(device)
     #criterion = nn.MSELoss()
     criterion = MSEwithL2(model, lambda_reg=lambda_reg)
