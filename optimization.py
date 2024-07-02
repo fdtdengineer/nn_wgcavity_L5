@@ -44,7 +44,7 @@ if __name__ == "__main__":
     t = torch.tensor([t_target], device=device, dtype=torch.float32)
     t = t.view(1, 1)  
 
-    optimizer = torch.optim.SGD([x], lr=2)
+    optimizer = torch.optim.SGD([x], lr=10)
     #criterion = torch.nn.MSELoss()
     criterion = nntorch.MSEwithL2(model, lambda_reg=1)
     # Optimization

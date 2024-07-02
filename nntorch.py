@@ -15,7 +15,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # To represent the symmetry about x- and y-axes
 class SymX(nn.Module):
-    def __init__(self, list_idxzero_x=[8], list_idxzero_y=[0,1,2], xabsmax=30):
+    def __init__(self, list_idxzero_x=[8], list_idxzero_y=[0,1,2], xabsmax=50):
         super(SymX, self).__init__()
         self.list_idxzero_x = list_idxzero_x
         self.list_idxzero_y = list_idxzero_y
@@ -149,7 +149,7 @@ if __name__ == "__main__":
     num_params = 14
     num_dims = 2
     num_samples = 10000
-    EPOCH = 100
+    EPOCH = 200
     num_batch = 100
     num_test = 1000
     seed = 12345678
