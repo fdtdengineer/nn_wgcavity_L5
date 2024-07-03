@@ -23,7 +23,8 @@ if True:
     filepath_npy = "npy\\"
     filepath_output = "output\\"
     filepath_figure = "figure\\"
-
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 if __name__ == "__main__":
@@ -31,7 +32,7 @@ if __name__ == "__main__":
     model = nntorch.CNN().to(device)
     model.load_state_dict(torch.load(filepath_output + "cnn.pkl", map_location=device))
 
-    t_target = 5 # target: Q=1e5
+    t_target = 6 # target: Q=1e5
 
     # Load test data
     test_data = np.load(filepath_npy + "test_data.npy")
@@ -44,11 +45,11 @@ if __name__ == "__main__":
     t = torch.tensor([t_target], device=device, dtype=torch.float32)
     t = t.view(1, 1)  
 
-    optimizer = torch.optim.SGD([x], lr=10)
+    optimizer = torch.optim.SGD([x], lr=1000)
     #criterion = torch.nn.MSELoss()
     criterion = nntorch.MSEwithL2(model, lambda_reg=1)
     # Optimization
-    num_iter = int(5e3)
+    num_iter = int(100)
     loss_history = np.zeros(num_iter)
 
     for i in range(num_iter):
@@ -63,7 +64,7 @@ if __name__ == "__main__":
     x_out = x.detach().cpu().numpy()
     print(x_out.flatten())
     # Plot loss history
-    """
+
     plt.figure(figsize=(5,4))
     plt.plot(loss_history)
     plt.xlabel("iteration")
@@ -71,8 +72,7 @@ if __name__ == "__main__":
     plt.yscale("log")
     plt.tight_layout()
     plt.savefig(filepath_figure + "loss_history_opt.svg", transparent=True)
-    plt.show()
-    """
+    #plt.show()
     
     # Prediction
     x = x.reshape(-1, 1, 14, 2)

@@ -23,11 +23,13 @@ if True:
     filepath_npy = "npy\\"
     filepath_output = "output\\"
     filepath_figure = "figure\\"
-
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 if __name__ == "__main__":
     # Load trained model "cnn.pkl"
-    model = nntorch.CNN()
+    model = nntorch.CNN().to(device)
     model.load_state_dict(torch.load(filepath_output + "cnn.pkl"))
 
     # Load test data
@@ -42,11 +44,11 @@ if __name__ == "__main__":
     # Get prediction
     test_data = torch.from_numpy(test_data).float()
     test_label = torch.from_numpy(test_label).float()
-    test_data = test_data.view(-1, 1, 13, 2)
+    test_data = test_data.view(-1, 1, 14, 2).to(device)
     #test_data = test_data.view(-1, 2, 5, 13)
     test_label = test_label.view(-1, 1)
     prediction = model(test_data)
-    prediction = prediction.detach().numpy()
+    prediction = prediction.detach().cpu().numpy()
     prediction = prediction.reshape(-1, 1)
 
     # linear regression without intercept
