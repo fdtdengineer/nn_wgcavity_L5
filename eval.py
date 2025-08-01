@@ -42,7 +42,7 @@ if __name__ == "__main__":
     # Get prediction
     test_data = torch.from_numpy(test_data).float()
     test_label = torch.from_numpy(test_label).float()
-    test_data = test_data.view(-1, 1, 13, 2)
+    test_data = test_data.view(-1, 1, 14, 2)
     #test_data = test_data.view(-1, 2, 5, 13)
     test_label = test_label.view(-1, 1)
     prediction = model(test_data)

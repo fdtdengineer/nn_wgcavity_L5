@@ -146,20 +146,21 @@ if __name__ == "__main__":
     # params
     num_params = 14
     num_dims = 2
-    num_samples = 10000
-    EPOCH = 500
+    num_samples = 1000#10000
+    EPOCH = 100
     num_batch = 100
     num_test = 100
     seed = 12345678
     lr=0.01
     lambda_reg=2
     # Data Loadings
-    df_q_fem = pd.read_csv(filepath_q_fem + filename_q_fem)#[0:num_samples]
+    df_q_fem = pd.read_csv(filepath_q_fem + filename_q_fem)[0:num_samples]
     npr_q_fem = df_q_fem.to_numpy()
     npr_q_fem = np.log10(npr_q_fem)
 
     # load_npy
     x = np.load(filepath_npy + 'dataset.npy')
+    x = x[:num_samples]
     x = torch.tensor(x, dtype=torch.float32)
     t = torch.tensor(npr_q_fem, dtype=torch.float32)
     dataset = torch.utils.data.TensorDataset(x, t)
