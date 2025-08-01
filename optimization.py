@@ -84,6 +84,7 @@ if __name__ == "__main__":
     x_out = x_out.reshape(14,2)
 
     df_x_out = pd.DataFrame(x_out)
+    df_x_out["dummy"] = " "
     df_x_out.to_csv(filepath_npy + "x_out1.csv", index=False, header=False)
 
     print("end")
