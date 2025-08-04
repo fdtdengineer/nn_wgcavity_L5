@@ -146,7 +146,7 @@ if __name__ == "__main__":
     # params
     num_params = 14
     num_dims = 2
-    num_samples = 10000 #10000
+    num_samples = 300 #10000
     EPOCH = 300
     num_batch = 100
     num_test = 100
