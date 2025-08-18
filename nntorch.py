@@ -13,7 +13,7 @@ if True:
 
 # To represent the symmetry about x- and y-axes
 class SymX(nn.Module):
-    def __init__(self, list_idxzero_x=[8], list_idxzero_y=[0,1,2], xabsmax=20):
+    def __init__(self, list_idxzero_x=[8], list_idxzero_y=[0,1,2], xabsmax=30):
         super(SymX, self).__init__()
         self.list_idxzero_x = list_idxzero_x
         self.list_idxzero_y = list_idxzero_y
