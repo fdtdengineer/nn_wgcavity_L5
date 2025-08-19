@@ -27,7 +27,8 @@ if True:
 
 if __name__ == "__main__":
     # Load trained model "cnn.pkl"
-    model = nntorch.CNN()
+    #model = nntorch.CNN(xabsmax=30)
+    model = nntorch.CNN(xabsmax=50)
     model.load_state_dict(torch.load(filepath_output + "cnn.pkl"))
 
     t_target = 5 # target: Q=1e5

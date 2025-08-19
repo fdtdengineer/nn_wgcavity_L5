@@ -71,8 +71,8 @@ if __name__ == "__main__":
     
     plt.xlabel("$\log_{10}Q_{\mathrm{FEM}}$")
     plt.ylabel("$\log_{10}Q_{\mathrm{NN}}$")
-    plt.savefig(filepath_figure + "prediction.svg", transparent=True)
     plt.tight_layout()
+    plt.savefig(filepath_figure + "prediction.svg", transparent=True)
     plt.show()
 
     # linear-linear plot
@@ -97,8 +97,10 @@ if __name__ == "__main__":
 
     plt.xlabel("$Q_{\mathrm{FEM}}$")
     plt.ylabel("$Q_{\mathrm{NN}}$")
-    plt.savefig(filepath_figure + "prediction_linear.svg", transparent=True)
     plt.tight_layout()
+    plt.savefig(filepath_figure + "prediction_linear.svg", transparent=True)
+
     plt.show()
 
     print("Done.")
+# %%

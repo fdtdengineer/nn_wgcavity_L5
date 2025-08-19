@@ -13,7 +13,7 @@ if True:
 
 # To represent the symmetry about x- and y-axes
 class SymX(nn.Module):
-    def __init__(self, list_idxzero_x=[8], list_idxzero_y=[0,1,2], xabsmax=30):
+    def __init__(self, list_idxzero_x=[8], list_idxzero_y=[0,1,2], xabsmax=200):
         super(SymX, self).__init__()
         self.list_idxzero_x = list_idxzero_x
         self.list_idxzero_y = list_idxzero_y
@@ -63,10 +63,10 @@ class MSEwithL2(nn.Module):
 
 # CNN
 class CNN(nn.Module):
-    def __init__(self):
+    def __init__(self, xabsmax=100):
         super(CNN, self).__init__()
         padding=0
-        self.symx = SymX()
+        self.symx = SymX(xabsmax=xabsmax)
         self.conv1 = nn.Conv2d(2, 50, kernel_size=(3,3), padding=padding)
         self.relu1 = nn.ReLU()
         self.fc1 = nn.Linear(50*3*9, 200) ## (5-4)*(13-4)
@@ -146,8 +146,8 @@ if __name__ == "__main__":
     # params
     num_params = 14
     num_dims = 2
-    num_samples = 300 #10000
-    EPOCH = 300
+    num_samples = 10000 #10000
+    EPOCH = 60 #300
     num_batch = 100
     num_test = 100
     seed = 12345678
